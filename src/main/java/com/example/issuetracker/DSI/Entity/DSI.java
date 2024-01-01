@@ -13,8 +13,10 @@ import java.util.Date;
 public class DSI {
     @Id
     private String id_dsi;
+    @Column(unique = true)
     private String username_dsi;
     private String password_dsi;
+    private String name_company;
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)
