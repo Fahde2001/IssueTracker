@@ -16,6 +16,7 @@ import java.util.Date;
 public class technicien implements Serializable {
     @Id
     private String idTechnicien;
+    @Column(unique = true)
     private String userNameTechnicien;
     private String passwordTechnicien;
     //relation with tadable DSI

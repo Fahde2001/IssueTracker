@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -17,16 +18,10 @@ public class agence implements Serializable {
     @Id
     private String idAgence;
     private String name;
-    @Column
-    private TypeUser typeUser;
     //relation with DSI table
     @ManyToOne
     @JoinColumn(name = "id_dsi")
     private DSI dsi;
-    //relation with Chefagence table
-    @OneToOne
-    @JoinColumn(name = "agence")
-    private chefAgence chefAgence;
     //date
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

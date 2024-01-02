@@ -23,19 +23,6 @@ public class DSI implements Serializable {
     private String username_dsi;
     private String password_dsi;
     private String name_company;
-    //agences
-    @OneToMany(mappedBy = "dsi")
-    private List<agence> agences;
-    //chefAgences
-    @OneToMany(mappedBy = "dsi")
-    private List<chefAgence> chefAgences;
-    //employer
-    @OneToMany(mappedBy = "dsiemployer")
-    private List<Employer> employers;
-    //technicien
-    @OneToMany(mappedBy = "dsi")
-    private List<technicien> techniciens;
-    //curent date
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)

@@ -17,9 +17,15 @@ public class Employer {
     @Column(unique = true)
     private String userNameEmployer;
     private String passwrodEmployer;
-    @ManyToOne
+    //relation with table DSI
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_dsi")
     private DSI dsiemployer;
+    //relation with table agence
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idAgence")
+    private agence agence;
+
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)

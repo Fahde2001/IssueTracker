@@ -20,11 +20,11 @@ public class chefAgence implements Serializable {
     private String userNameChefAgenc;
     private String passwordChefAgence;
     //relation with table dsi
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_dsi")
     private DSI dsi;
     //relation with agence table
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idAgence")
     private agence agence;
     //insert curent date
