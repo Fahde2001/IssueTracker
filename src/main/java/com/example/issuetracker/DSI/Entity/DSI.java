@@ -10,12 +10,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Data@NoArgsConstructor@AllArgsConstructor
-public class DSI {
+public class DSI implements Serializable {
     @Id
     private String id_dsi;
     @Column(unique = true)
