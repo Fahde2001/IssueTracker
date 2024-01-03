@@ -1,6 +1,7 @@
 package com.example.issuetracker.Users.Entity;
 
 import com.example.issuetracker.DSI.Entity.DSI;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,10 @@ public class agence implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_dsi")
     private DSI dsi;
+    //relation with chefagence
+    @OneToMany(mappedBy = "agence",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<chefAgence> chefAgence;
     //date
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

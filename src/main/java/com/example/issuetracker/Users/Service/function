@@ -1,0 +1,20 @@
+[
+    {
+        "typeUser": "ChefAgence",
+        "userName": "RedOne",
+        "idDsi": "616e2211-733d-4f94-8da7-b6ab435a2be1",
+        "idChefAgence": "480f5773-a69f-4494-9188-9a924b3d7b1e",
+        "idAgence": "7c17fcd0-5d73-42b4-a095-293174bba804",
+        "createAt": "2021-12-31T23:00:00.000+00:00",
+        "nameAgence": "Estem_Casa"
+    },
+    {
+        "typeUser": "ChefAgence",
+        "userName": "KAmal",
+        "idDsi": "616e2211-733d-4f94-8da7-b6ab435a2be1",
+        "idChefAgence": "e016b2a6-6879-4ad9-b90e-9d3aaccb0dae",
+        "idAgence": "a30cbdfc-4482-459b-b3b0-2b8fadc1128b",
+        "createAt": "2021-12-31T23:00:00.000+00:00",
+        "nameAgence": "Estem_BM"
+    }
+]

@@ -18,11 +18,11 @@ public class Employer {
     private String userNameEmployer;
     private String passwrodEmployer;
     //relation with table DSI
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "id_dsi")
     private DSI dsiemployer;
     //relation with table agence
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "idAgence")
     private agence agence;
 
