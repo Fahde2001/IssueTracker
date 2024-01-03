@@ -17,12 +17,13 @@ public class Employer {
     @Column(unique = true)
     private String userNameEmployer;
     private String passwrodEmployer;
+    private TypeUser typeUser;
     //relation with table DSI
     @ManyToOne()
     @JoinColumn(name = "id_dsi")
     private DSI dsiemployer;
     //relation with table agence
-    @ManyToOne()
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "idAgence")
     private agence agence;
 

@@ -5,13 +5,14 @@ import com.example.issuetracker.DSI.Repository.Dsi_repostory;
 import com.example.issuetracker.Users.DTOAgence.PasswordDsi;
 import com.example.issuetracker.Users.DTOChefAgence.ChefAgenceDisplyDTO;
 import com.example.issuetracker.Users.DTOChefAgence.CretionChefAgenceDTO;
+import com.example.issuetracker.Users.DTOEmployer.CreationEmployerDTO;
+import com.example.issuetracker.Users.DTOEmployer.EmployerDisplyDTO;
+import com.example.issuetracker.Users.Entity.Employer;
 import com.example.issuetracker.Users.Entity.TypeUser;
 import com.example.issuetracker.Users.Entity.agence;
 import com.example.issuetracker.Users.Entity.chefAgence;
-import com.example.issuetracker.Users.Function.FunctionAgence;
-import com.example.issuetracker.Users.Function.FunctionDSI;
 import com.example.issuetracker.Users.Repository.AgenceRepository;
-import com.example.issuetracker.Users.Repository.ChefAgenceRepository;
+import com.example.issuetracker.Users.Repository.EmployerRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -29,31 +30,25 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ChefAgenceService {
-
-    private final AgenceRepository agenceRepository;
-    private final Dsi_repostory dsiRepostory;
-    private final ChefAgenceRepository chefAgenceRepository;
-
-
+public class EmployeService {
     @Autowired
-    public ChefAgenceService(AgenceRepository agenceRepository, Dsi_repostory dsiRepostory,
-                             ChefAgenceRepository chefAgenceRepository) {
-        this.agenceRepository = agenceRepository;
-        this.dsiRepostory = dsiRepostory;
-        this.chefAgenceRepository = chefAgenceRepository;
-    }
+    private EmployerRepository employerRepository;
+    @Autowired
+    private Dsi_repostory dsiRepostory;
+    @Autowired
+    private AgenceRepository agenceRepository;
 
-    public ResponseEntity<Boolean> ADDUserChefAgence(String IdDsi, String IdAgence,
+
+    public ResponseEntity<Boolean> AddUserEmployer(String IdDsi, String IdAgence,
                                                      PasswordDsi passwordDsi,
-                                                     CretionChefAgenceDTO cretionChefAgenceDTO) {
+                                                     CreationEmployerDTO creationEmployerDTO) {
         try {
-            validateInputs(IdDsi, IdAgence, passwordDsi.getPassword(),cretionChefAgenceDTO.getUserName(), cretionChefAgenceDTO.getPassword());
+            validateInputs(IdDsi, IdAgence, passwordDsi.getPassword(),creationEmployerDTO.getUserName(), creationEmployerDTO.getPassword());
             DSI dsi = validateAndGetDsi(IdDsi);
             agence agence = validateAndGetAgence(IdDsi, IdAgence);
             comparPassword(IdDsi,passwordDsi.getPassword());
-            chefAgence chefAgence = createChefAgence(cretionChefAgenceDTO, dsi, agence);
-            this.chefAgenceRepository.save(chefAgence);
+            Employer employer = createEmployer(creationEmployerDTO, dsi, agence);
+            this.employerRepository.save(employer);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
         } catch (ResponseStatusException ex) {
             throw ex;
@@ -62,29 +57,29 @@ public class ChefAgenceService {
         }
     }
 
-    public ResponseEntity<List<ChefAgenceDisplyDTO>> GetAllChefAgence(String IdDsi){
+    public ResponseEntity<List<EmployerDisplyDTO>> GetAllEmployer(String IdDsi){
         try {
             validateDsi(IdDsi);
             DSI dsi=validateAndGetDsi(IdDsi);
-            List<chefAgence> chefAgence=this.chefAgenceRepository.findAllChefAgenceByIdDSI(IdDsi);
-           List<ChefAgenceDisplyDTO> chefAgenceDisply=chefAgence.stream()
-                   .map(this :: mapChefAgenceDTO)
-                   .collect(Collectors.toList());
-            return new ResponseEntity<>(chefAgenceDisply,HttpStatus.OK);
+            List<Employer> employers=this.employerRepository.findAllEmpoyerByIdDSI(IdDsi);
+            List<EmployerDisplyDTO> employerDisply=employers.stream()
+                    .map(this :: mapEmployerDTO)
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(employerDisply,HttpStatus.OK);
         } catch (ResponseStatusException ex) {
             throw ex;
         } catch (Exception ex) {
             throw new RuntimeException("An error occurred", ex);
         }
     }
-    public ResponseEntity<Boolean> DeleteChefAgence(String IdDsi,String IdChefAgence,PasswordDsi passwordDsi){
+    public ResponseEntity<Boolean> DeleteEmployer(String IdDsi,String IdEmploye,PasswordDsi passwordDsi){
         try{
-            ValidateForDelete(IdDsi,IdChefAgence,passwordDsi);
+            ValidateForDelete(IdDsi,IdEmploye,passwordDsi);
             DSI dsi=validateAndGetDsi(IdDsi);
             comparPassword(IdDsi,passwordDsi.getPassword());
-            chefAgence chefAgence=validateAndGetChefAgence(IdChefAgence);
+            Employer employer=validateAndGetEmployer(IdEmploye);
             try {
-                this.chefAgenceRepository.deleteById(IdChefAgence);
+                this.employerRepository.deleteById(IdEmploye);
                 System.out.println("Deletion successful");
                 boolean status = true;
                 return new ResponseEntity<>(status,HttpStatus.OK);
@@ -99,20 +94,20 @@ public class ChefAgenceService {
             throw new RuntimeException("An error occurred", ex);
         }
     }
-    public ResponseEntity<Boolean> UpdateChefAgence(String IdDsi,String IdChefAgence,PasswordDsi passwordDsi,CretionChefAgenceDTO cretionChefAgenceDTO){
+    public ResponseEntity<Boolean> UpdateEmployer(String IdDsi,String IdEmployer,PasswordDsi passwordDsi,CreationEmployerDTO creationEmployerDTO){
         try{
-            validateInputs(IdDsi,IdChefAgence,passwordDsi.getPassword(),cretionChefAgenceDTO.getUserName(),cretionChefAgenceDTO.getPassword());
+            validateInputs(IdDsi,IdEmployer,passwordDsi.getPassword(),creationEmployerDTO.getUserName(),creationEmployerDTO.getPassword());
             DSI dsi=validateAndGetDsi(IdDsi);
             comparPassword(IdDsi,passwordDsi.getPassword());
-            chefAgence chefAgence=validateAndGetChefAgence(IdChefAgence);
-            if(!ChekUserNameExsite(cretionChefAgenceDTO.getUserName())) throw new ResponseStatusException(HttpStatus.FORBIDDEN,"This username is alredy usng");
-            chefAgence.setUserNameChefAgenc(cretionChefAgenceDTO.getUserName());
-            chefAgence.setPasswordChefAgence(BCrypt.hashpw(cretionChefAgenceDTO.getPassword(),BCrypt.gensalt()));
+            Employer employer=validateAndGetEmployer(IdEmployer);
+            if(!ChekUserNameExsite(creationEmployerDTO.getUserName())) throw new ResponseStatusException(HttpStatus.FORBIDDEN,"This username is alredy usng");
+            employer.setUserNameEmployer(creationEmployerDTO.getUserName());
+            employer.setPasswrodEmployer(BCrypt.hashpw(creationEmployerDTO.getPassword(),BCrypt.gensalt()));
             boolean status;
             try {
-                this.chefAgenceRepository.save(chefAgence);
+                this.employerRepository.save(employer);
                 System.out.println("Update successful");
-                 status = true;
+                status = true;
                 return new ResponseEntity<>(status,HttpStatus.OK);
             } catch (EmptyResultDataAccessException e) {
                 System.out.println("Agence not found for Updating");
@@ -126,14 +121,14 @@ public class ChefAgenceService {
             throw new RuntimeException("An error occurred", ex);
         }
     }
-    private ChefAgenceDisplyDTO mapChefAgenceDTO(chefAgence chefAgence){
-        ChefAgenceDisplyDTO dto=new ChefAgenceDisplyDTO();
-        dto.setIdAgence(chefAgence.getAgence().getIdAgence());
-        dto.setIdChefAgence(chefAgence.getIdChefAgenc());
-        dto.setUserName(chefAgence.getUserNameChefAgenc());
-        dto.setTypeUser(chefAgence.getTypeUser());
-        dto.setIdDsi(chefAgence.getDsi().getId_dsi());
-        dto.setNameAgence(chefAgence.getAgence().getName());
+    private EmployerDisplyDTO mapEmployerDTO(Employer employer){
+        EmployerDisplyDTO dto=new EmployerDisplyDTO();
+        dto.setIdAgence(employer.getAgence().getIdAgence());
+        dto.setIdEmployer(employer.getIdEmployer());
+        dto.setUserName(employer.getUserNameEmployer());
+        dto.setTypeUser(employer.getTypeUser());
+        dto.setIdDsi(employer.getDsiemployer().getId_dsi());
+        dto.setNameAgence(employer.getAgence().getName());
         String dateString = "2022-01-01"; // Replace this with your actual string
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
@@ -146,14 +141,14 @@ public class ChefAgenceService {
         dto.setCreateAt(date);
         return dto;
     }
-    private void ValidateForDelete(String IdDsi,String IdChefAgence,PasswordDsi passwordDsi){
-        if(IdDsi==null|| IdChefAgence==null|| passwordDsi.getPassword()==null) throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Data is Empty");
+    private void ValidateForDelete(String IdDsi,String IdEmployer,PasswordDsi passwordDsi){
+        if(IdDsi==null|| IdEmployer==null|| passwordDsi.getPassword()==null) throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Data is Empty");
 
     }
     private Boolean ChekUserNameExsite(String UserName){
-        Optional<chefAgence> optionalChefAgence=this.chefAgenceRepository.findChefAgenceBy_UserName(UserName);
+        Optional<Employer> optionalEmployer=this.employerRepository.findEmployerBy_UserName(UserName);
         boolean status;
-        if(optionalChefAgence.isPresent()){
+        if(optionalEmployer.isPresent()){
             return status=false;
         }else{
             return status=true;
@@ -169,9 +164,9 @@ public class ChefAgenceService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Your Data is Empty");
         }
     }
-    private chefAgence validateAndGetChefAgence(String IdChefAgenc){
-        Optional<chefAgence> optionalChefAgence=this.chefAgenceRepository.findById(IdChefAgenc);
-        return optionalChefAgence.orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN,"ChefAgence Not Found"));
+    private Employer validateAndGetEmployer(String IdEmpoyer){
+        Optional<Employer> optionalEmployer=this.employerRepository.findById(IdEmpoyer);
+        return optionalEmployer.orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN,"ChefAgence Not Found"));
     }
 
     private DSI validateAndGetDsi(String IdDsi) {
@@ -190,14 +185,15 @@ public class ChefAgenceService {
         return true;
     }
 
-    private chefAgence createChefAgence(CretionChefAgenceDTO cretionChefAgenceDTO, DSI dsi, agence agence) {
-        chefAgence chefAgence = new chefAgence();
-        chefAgence.setIdChefAgenc(UUID.randomUUID().toString());
-        chefAgence.setUserNameChefAgenc(cretionChefAgenceDTO.getUserName());
-        chefAgence.setPasswordChefAgence(BCrypt.hashpw(cretionChefAgenceDTO.getPassword(),BCrypt.gensalt()));
-        chefAgence.setDsi(dsi);
-        chefAgence.setAgence(agence);
-        chefAgence.setTypeUser(TypeUser.ChefAgence);
-        return chefAgence;
+    private Employer createEmployer(CreationEmployerDTO creationEmployerDTO, DSI dsi, agence agence) {
+        Employer employer = new Employer();
+        employer.setIdEmployer(UUID.randomUUID().toString());
+        employer.setUserNameEmployer(creationEmployerDTO.getUserName());
+        employer.setPasswrodEmployer(BCrypt.hashpw(creationEmployerDTO.getPassword(),BCrypt.gensalt()));
+        employer.setDsiemployer(dsi);
+        employer.setAgence(agence);
+        employer.setTypeUser(TypeUser.Employer);
+        return employer;
     }
+
 }

@@ -27,6 +27,10 @@ public class agence implements Serializable {
     @OneToMany(mappedBy = "agence",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<chefAgence> chefAgence;
+    //relation with employe
+    @OneToMany(mappedBy = "agence",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonIgnore
+    private List<Employer> employers;
     //date
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

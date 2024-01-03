@@ -22,10 +22,6 @@ import java.util.List;
 public class ChefAgenceController {
     @Autowired
     private ChefAgenceService chefAgenceService;
-    @Autowired
-    private FunctionDSI functionDSI;
-    @Autowired
-    private FunctionAgence functionAgence;
 
     @PostMapping("/add/{IdDsi}/{IdAgence}")
     public ResponseEntity<Boolean> addNewChefAgence(
