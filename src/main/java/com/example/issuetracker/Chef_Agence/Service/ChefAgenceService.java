@@ -1,13 +1,11 @@
 package com.example.issuetracker.Chef_Agence.Service;
 
-import com.example.issuetracker.Chef_Agence.DTO.LoginChefAgenceDTO;
+import com.example.issuetracker.Users.DTO.DTOLogin;
 import com.example.issuetracker.Users.Entity.ChefAgence;
 import com.example.issuetracker.Users.Repository.ChefAgenceRepository;
-import org.aspectj.apache.bcel.classfile.Module;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,14 +17,14 @@ public class ChefAgenceService {
     @Autowired
     private ChefAgenceRepository chefAgenceRepository;
 
-    public ResponseEntity<Boolean> LoginChefgence(LoginChefAgenceDTO loginChefAgenceDTO){
+    public ResponseEntity<ChefAgence> LoginChefgence(DTOLogin loginChefAgenceDTO){
         try {
             ValidInputLogin(loginChefAgenceDTO.getUserName(),loginChefAgenceDTO.getPassword());
             ChefAgence chefAgence=GetChefAgenceByUserName(loginChefAgenceDTO.getUserName());
             boolean status=CheckPasswordUser(chefAgence.getUserNameChefAgenc(),loginChefAgenceDTO.getPassword());
             System.out.println("\n\n\n status loginfunction : \t"+status);
             if (status){
-                return new ResponseEntity<>(true,HttpStatus.OK);
+                return new ResponseEntity<>(chefAgence,HttpStatus.OK);
             }
             else{
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,"your password or username is not correct");

@@ -2,6 +2,7 @@ package com.example.issuetracker.DSI.Controller;
 
 import com.example.issuetracker.DSI.DTO.Create_dsi_dto;
 import com.example.issuetracker.DSI.DTO.login_Dsi_DTO;
+import com.example.issuetracker.DSI.Entity.DSI;
 import com.example.issuetracker.DSI.Service.DSISerivice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class DSIController {
         return this.dsiSerivice.AddUserDsi(createDsiDto);
     }
     @PostMapping("/login")
-    public ResponseEntity<Boolean> loginDsi(@RequestBody login_Dsi_DTO loginDsiDto){
+    public ResponseEntity<DSI> loginDsi(@RequestBody login_Dsi_DTO loginDsiDto){
         return  this.dsiSerivice.loginDsi(loginDsiDto);
     }
 
