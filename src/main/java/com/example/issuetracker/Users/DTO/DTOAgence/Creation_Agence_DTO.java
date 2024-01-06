@@ -1,4 +1,4 @@
-package com.example.issuetracker.Users.DTOAgence;
+package com.example.issuetracker.Users.DTO.DTOAgence;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

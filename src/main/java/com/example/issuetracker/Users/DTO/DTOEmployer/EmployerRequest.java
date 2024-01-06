@@ -1,7 +1,6 @@
-package com.example.issuetracker.Users.DTOEmployer;
+package com.example.issuetracker.Users.DTO.DTOEmployer;
 
-import com.example.issuetracker.Users.DTOAgence.PasswordDsi;
-import com.example.issuetracker.Users.DTOChefAgence.CretionChefAgenceDTO;
+import com.example.issuetracker.Users.DTO.DTOAgence.PasswordDsi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

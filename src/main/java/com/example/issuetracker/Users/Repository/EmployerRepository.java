@@ -1,7 +1,6 @@
 package com.example.issuetracker.Users.Repository;
 
 import com.example.issuetracker.Users.Entity.Employer;
-import com.example.issuetracker.Users.Entity.chefAgence;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

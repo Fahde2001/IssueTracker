@@ -2,15 +2,12 @@ package com.example.issuetracker.Users.Service;
 
 import com.example.issuetracker.DSI.Entity.DSI;
 import com.example.issuetracker.DSI.Repository.Dsi_repostory;
-import com.example.issuetracker.Users.DTOAgence.PasswordDsi;
-import com.example.issuetracker.Users.DTOChefAgence.ChefAgenceDisplyDTO;
-import com.example.issuetracker.Users.DTOChefAgence.CretionChefAgenceDTO;
-import com.example.issuetracker.Users.DTOEmployer.CreationEmployerDTO;
-import com.example.issuetracker.Users.DTOEmployer.EmployerDisplyDTO;
+import com.example.issuetracker.Users.DTO.DTOAgence.PasswordDsi;
+import com.example.issuetracker.Users.DTO.DTOEmployer.CreationEmployerDTO;
+import com.example.issuetracker.Users.DTO.DTOEmployer.EmployerDisplyDTO;
 import com.example.issuetracker.Users.Entity.Employer;
 import com.example.issuetracker.Users.Entity.TypeUser;
-import com.example.issuetracker.Users.Entity.agence;
-import com.example.issuetracker.Users.Entity.chefAgence;
+import com.example.issuetracker.Users.Entity.Agence;
 import com.example.issuetracker.Users.Repository.AgenceRepository;
 import com.example.issuetracker.Users.Repository.EmployerRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -30,7 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class EmployeService {
+public class DSIEmployeService {
     @Autowired
     private EmployerRepository employerRepository;
     @Autowired
@@ -45,8 +42,9 @@ public class EmployeService {
         try {
             validateInputs(IdDsi, IdAgence, passwordDsi.getPassword(),creationEmployerDTO.getUserName(), creationEmployerDTO.getPassword());
             DSI dsi = validateAndGetDsi(IdDsi);
-            agence agence = validateAndGetAgence(IdDsi, IdAgence);
+            Agence agence = validateAndGetAgence(IdDsi, IdAgence);
             comparPassword(IdDsi,passwordDsi.getPassword());
+            if(!ChekUserNameExsite(creationEmployerDTO.getUserName())) throw new ResponseStatusException(HttpStatus.FORBIDDEN,"This username is alredy usng");
             Employer employer = createEmployer(creationEmployerDTO, dsi, agence);
             this.employerRepository.save(employer);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
@@ -174,7 +172,7 @@ public class EmployeService {
         return optionalDSI.orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "DSI not found"));
     }
 
-    private agence validateAndGetAgence(String IdDsi, String IdAgence) {
+    private Agence validateAndGetAgence(String IdDsi, String IdAgence) {
         return this.agenceRepository.findAllAgencesByDsiIdByAgenceId(IdDsi, IdAgence)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Agence not found"));
     }
@@ -185,7 +183,7 @@ public class EmployeService {
         return true;
     }
 
-    private Employer createEmployer(CreationEmployerDTO creationEmployerDTO, DSI dsi, agence agence) {
+    private Employer createEmployer(CreationEmployerDTO creationEmployerDTO, DSI dsi, Agence agence) {
         Employer employer = new Employer();
         employer.setIdEmployer(UUID.randomUUID().toString());
         employer.setUserNameEmployer(creationEmployerDTO.getUserName());

@@ -1,11 +1,9 @@
 package com.example.issuetracker.DSI.Controller;
 
-import com.example.issuetracker.Users.DTOAgence.PasswordDsi;
-import com.example.issuetracker.Users.DTOChefAgence.ChefAgenceDisplyDTO;
-import com.example.issuetracker.Users.DTOChefAgence.ChefAgenceRequest;
-import com.example.issuetracker.Users.DTOEmployer.EmployerDisplyDTO;
-import com.example.issuetracker.Users.DTOEmployer.EmployerRequest;
-import com.example.issuetracker.Users.Service.EmployeService;
+import com.example.issuetracker.Users.DTO.DTOAgence.PasswordDsi;
+import com.example.issuetracker.Users.DTO.DTOEmployer.EmployerDisplyDTO;
+import com.example.issuetracker.Users.DTO.DTOEmployer.EmployerRequest;
+import com.example.issuetracker.Users.Service.DSIEmployeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dsi/employer")
-public class EmployerController {
+public class DSIEmployerController {
     @Autowired
-    private EmployeService employeService;
+    private DSIEmployeService employeService;
 
     @PostMapping("/add/{IdDsi}/{IdAgence}")
     public ResponseEntity<Boolean> AddEmployer(

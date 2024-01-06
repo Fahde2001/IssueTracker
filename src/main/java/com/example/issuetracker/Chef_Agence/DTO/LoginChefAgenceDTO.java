@@ -1,13 +1,13 @@
-package com.example.issuetracker.Users.DTOChefAgence;
+package com.example.issuetracker.Chef_Agence.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+
 @Data@NoArgsConstructor@AllArgsConstructor
-public class CretionChefAgenceDTO {
-    @JsonProperty("UserNAme")
+public class LoginChefAgenceDTO {
+    @JsonProperty("UserName")
     private String UserName;
     @JsonProperty("Password")
     private String Password;

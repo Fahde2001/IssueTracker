@@ -1,10 +1,10 @@
 package com.example.issuetracker.DSI.Controller;
 
-import com.example.issuetracker.Users.DTOAgence.Creation_Agence_DTO;
-import com.example.issuetracker.Users.DTOAgence.Display_Agence_DTO;
-import com.example.issuetracker.Users.DTOAgence.PasswordDsi;
-import com.example.issuetracker.Users.Entity.agence;
-import com.example.issuetracker.Users.Service.AgenceService;
+import com.example.issuetracker.Users.DTO.DTOAgence.Creation_Agence_DTO;
+import com.example.issuetracker.Users.DTO.DTOAgence.Display_Agence_DTO;
+import com.example.issuetracker.Users.DTO.DTOAgence.PasswordDsi;
+import com.example.issuetracker.Users.Entity.Agence;
+import com.example.issuetracker.Users.Service.DSIAgenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +13,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dsi/agence")
-public class AgenceController {
+public class DSIAgenceController {
     @Autowired
-    private AgenceService agenceService;
+    private DSIAgenceService agenceService;
 
     @PostMapping("/add/{idDsi}")
     public ResponseEntity<Boolean> AddNewAgence(@PathVariable String idDsi, @RequestBody Creation_Agence_DTO creationAgenceDto) {
@@ -29,7 +29,7 @@ public class AgenceController {
     }
 
     @PatchMapping("/update/{idDsi}/{idAgence}")
-    public ResponseEntity<agence> UpdateAgence(@RequestBody Creation_Agence_DTO creationAgenceDto,@PathVariable String idDsi,@PathVariable String idAgence){
+    public ResponseEntity<Agence> UpdateAgence(@RequestBody Creation_Agence_DTO creationAgenceDto, @PathVariable String idDsi, @PathVariable String idAgence){
         System.out.println("idDsi : "+idDsi);
         System.out.println("IdAgence : "+idAgence);
         return this.agenceService.UpdateAgence(creationAgenceDto,idAgence,idDsi);
@@ -43,7 +43,7 @@ public class AgenceController {
         return this.agenceService.DeletAgence(idAgence,idDsi,passwordDsi);
     }
     @GetMapping("/gebyid/{idDsi}/{idAgence}")
-    public agence GetByID(@PathVariable String idDsi, @PathVariable String idAgence){
+    public Agence GetByID(@PathVariable String idDsi, @PathVariable String idAgence){
         System.out.println("idDsi : "+idDsi);
         System.out.println("IdAgence : "+idAgence);
         return this.agenceService.findAgenceByDSI(idDsi,idAgence);

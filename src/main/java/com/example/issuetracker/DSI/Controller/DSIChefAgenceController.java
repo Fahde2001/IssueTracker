@@ -1,17 +1,10 @@
 package com.example.issuetracker.DSI.Controller;
 
-import com.example.issuetracker.DSI.Entity.DSI;
-import com.example.issuetracker.Users.DTOAgence.PasswordDsi;
-import com.example.issuetracker.Users.DTOChefAgence.ChefAgenceDisplyDTO;
-import com.example.issuetracker.Users.DTOChefAgence.ChefAgenceRequest;
-import com.example.issuetracker.Users.DTOChefAgence.CretionChefAgenceDTO;
-import com.example.issuetracker.Users.Entity.agence;
-import com.example.issuetracker.Users.Entity.chefAgence;
-import com.example.issuetracker.Users.Function.FunctionAgence;
-import com.example.issuetracker.Users.Function.FunctionDSI;
-import com.example.issuetracker.Users.Service.ChefAgenceService;
+import com.example.issuetracker.Users.DTO.DTOAgence.PasswordDsi;
+import com.example.issuetracker.Users.DTO.DTOChefAgence.ChefAgenceDisplyDTO;
+import com.example.issuetracker.Users.DTO.DTOChefAgence.ChefAgenceRequest;
+import com.example.issuetracker.Users.Service.DSIChefAgenceService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +12,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/dsi/ChefAgence")
-public class ChefAgenceController {
+public class DSIChefAgenceController {
     @Autowired
-    private ChefAgenceService chefAgenceService;
+    private DSIChefAgenceService chefAgenceService;
 
     @PostMapping("/add/{IdDsi}/{IdAgence}")
     public ResponseEntity<Boolean> addNewChefAgence(

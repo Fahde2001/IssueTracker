@@ -2,14 +2,12 @@ package com.example.issuetracker.Users.Service;
 
 import com.example.issuetracker.DSI.Entity.DSI;
 import com.example.issuetracker.DSI.Repository.Dsi_repostory;
-import com.example.issuetracker.Users.DTOAgence.PasswordDsi;
-import com.example.issuetracker.Users.DTOChefAgence.ChefAgenceDisplyDTO;
-import com.example.issuetracker.Users.DTOChefAgence.CretionChefAgenceDTO;
+import com.example.issuetracker.Users.DTO.DTOAgence.PasswordDsi;
+import com.example.issuetracker.Users.DTO.DTOChefAgence.ChefAgenceDisplyDTO;
+import com.example.issuetracker.Users.DTO.DTOChefAgence.CretionChefAgenceDTO;
 import com.example.issuetracker.Users.Entity.TypeUser;
-import com.example.issuetracker.Users.Entity.agence;
-import com.example.issuetracker.Users.Entity.chefAgence;
-import com.example.issuetracker.Users.Function.FunctionAgence;
-import com.example.issuetracker.Users.Function.FunctionDSI;
+import com.example.issuetracker.Users.Entity.Agence;
+import com.example.issuetracker.Users.Entity.ChefAgence;
 import com.example.issuetracker.Users.Repository.AgenceRepository;
 import com.example.issuetracker.Users.Repository.ChefAgenceRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -29,7 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ChefAgenceService {
+public class DSIChefAgenceService {
 
     private final AgenceRepository agenceRepository;
     private final Dsi_repostory dsiRepostory;
@@ -37,8 +35,8 @@ public class ChefAgenceService {
 
 
     @Autowired
-    public ChefAgenceService(AgenceRepository agenceRepository, Dsi_repostory dsiRepostory,
-                             ChefAgenceRepository chefAgenceRepository) {
+    public DSIChefAgenceService(AgenceRepository agenceRepository, Dsi_repostory dsiRepostory,
+                                ChefAgenceRepository chefAgenceRepository) {
         this.agenceRepository = agenceRepository;
         this.dsiRepostory = dsiRepostory;
         this.chefAgenceRepository = chefAgenceRepository;
@@ -50,9 +48,9 @@ public class ChefAgenceService {
         try {
             validateInputs(IdDsi, IdAgence, passwordDsi.getPassword(),cretionChefAgenceDTO.getUserName(), cretionChefAgenceDTO.getPassword());
             DSI dsi = validateAndGetDsi(IdDsi);
-            agence agence = validateAndGetAgence(IdDsi, IdAgence);
+            Agence agence = validateAndGetAgence(IdDsi, IdAgence);
             comparPassword(IdDsi,passwordDsi.getPassword());
-            chefAgence chefAgence = createChefAgence(cretionChefAgenceDTO, dsi, agence);
+            ChefAgence chefAgence = createChefAgence(cretionChefAgenceDTO, dsi, agence);
             this.chefAgenceRepository.save(chefAgence);
             return new ResponseEntity<>(true, HttpStatus.CREATED);
         } catch (ResponseStatusException ex) {
@@ -66,7 +64,7 @@ public class ChefAgenceService {
         try {
             validateDsi(IdDsi);
             DSI dsi=validateAndGetDsi(IdDsi);
-            List<chefAgence> chefAgence=this.chefAgenceRepository.findAllChefAgenceByIdDSI(IdDsi);
+            List<ChefAgence> chefAgence=this.chefAgenceRepository.findAllChefAgenceByIdDSI(IdDsi);
            List<ChefAgenceDisplyDTO> chefAgenceDisply=chefAgence.stream()
                    .map(this :: mapChefAgenceDTO)
                    .collect(Collectors.toList());
@@ -82,7 +80,7 @@ public class ChefAgenceService {
             ValidateForDelete(IdDsi,IdChefAgence,passwordDsi);
             DSI dsi=validateAndGetDsi(IdDsi);
             comparPassword(IdDsi,passwordDsi.getPassword());
-            chefAgence chefAgence=validateAndGetChefAgence(IdChefAgence);
+            ChefAgence chefAgence=validateAndGetChefAgence(IdChefAgence);
             try {
                 this.chefAgenceRepository.deleteById(IdChefAgence);
                 System.out.println("Deletion successful");
@@ -104,7 +102,7 @@ public class ChefAgenceService {
             validateInputs(IdDsi,IdChefAgence,passwordDsi.getPassword(),cretionChefAgenceDTO.getUserName(),cretionChefAgenceDTO.getPassword());
             DSI dsi=validateAndGetDsi(IdDsi);
             comparPassword(IdDsi,passwordDsi.getPassword());
-            chefAgence chefAgence=validateAndGetChefAgence(IdChefAgence);
+            ChefAgence chefAgence=validateAndGetChefAgence(IdChefAgence);
             if(!ChekUserNameExsite(cretionChefAgenceDTO.getUserName())) throw new ResponseStatusException(HttpStatus.FORBIDDEN,"This username is alredy usng");
             chefAgence.setUserNameChefAgenc(cretionChefAgenceDTO.getUserName());
             chefAgence.setPasswordChefAgence(BCrypt.hashpw(cretionChefAgenceDTO.getPassword(),BCrypt.gensalt()));
@@ -126,7 +124,7 @@ public class ChefAgenceService {
             throw new RuntimeException("An error occurred", ex);
         }
     }
-    private ChefAgenceDisplyDTO mapChefAgenceDTO(chefAgence chefAgence){
+    private ChefAgenceDisplyDTO mapChefAgenceDTO(ChefAgence chefAgence){
         ChefAgenceDisplyDTO dto=new ChefAgenceDisplyDTO();
         dto.setIdAgence(chefAgence.getAgence().getIdAgence());
         dto.setIdChefAgence(chefAgence.getIdChefAgenc());
@@ -151,7 +149,7 @@ public class ChefAgenceService {
 
     }
     private Boolean ChekUserNameExsite(String UserName){
-        Optional<chefAgence> optionalChefAgence=this.chefAgenceRepository.findChefAgenceBy_UserName(UserName);
+        Optional<ChefAgence> optionalChefAgence=this.chefAgenceRepository.findChefAgenceBy_UserName(UserName);
         boolean status;
         if(optionalChefAgence.isPresent()){
             return status=false;
@@ -169,8 +167,8 @@ public class ChefAgenceService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Your Data is Empty");
         }
     }
-    private chefAgence validateAndGetChefAgence(String IdChefAgenc){
-        Optional<chefAgence> optionalChefAgence=this.chefAgenceRepository.findById(IdChefAgenc);
+    private ChefAgence validateAndGetChefAgence(String IdChefAgenc){
+        Optional<ChefAgence> optionalChefAgence=this.chefAgenceRepository.findById(IdChefAgenc);
         return optionalChefAgence.orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN,"ChefAgence Not Found"));
     }
 
@@ -179,7 +177,7 @@ public class ChefAgenceService {
         return optionalDSI.orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "DSI not found"));
     }
 
-    private agence validateAndGetAgence(String IdDsi, String IdAgence) {
+    private Agence validateAndGetAgence(String IdDsi, String IdAgence) {
         return this.agenceRepository.findAllAgencesByDsiIdByAgenceId(IdDsi, IdAgence)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Agence not found"));
     }
@@ -190,8 +188,8 @@ public class ChefAgenceService {
         return true;
     }
 
-    private chefAgence createChefAgence(CretionChefAgenceDTO cretionChefAgenceDTO, DSI dsi, agence agence) {
-        chefAgence chefAgence = new chefAgence();
+    private ChefAgence createChefAgence(CretionChefAgenceDTO cretionChefAgenceDTO, DSI dsi, Agence agence) {
+        ChefAgence chefAgence = new ChefAgence();
         chefAgence.setIdChefAgenc(UUID.randomUUID().toString());
         chefAgence.setUserNameChefAgenc(cretionChefAgenceDTO.getUserName());
         chefAgence.setPasswordChefAgence(BCrypt.hashpw(cretionChefAgenceDTO.getPassword(),BCrypt.gensalt()));

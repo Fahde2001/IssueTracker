@@ -13,21 +13,20 @@ import java.util.Date;
 @Entity
 @Data
 @NoArgsConstructor@AllArgsConstructor
-public class chefAgence implements Serializable {
+public class Technicien implements Serializable {
     @Id
-    private String idChefAgenc;
+    private String idTechnicien;
     @Column(unique = true)
-    private String userNameChefAgenc;
-    private String passwordChefAgence;
+    private String userNameTechnicien;
+    private String passwordTechnicien;
+    @Enumerated(EnumType.STRING)
     private TypeUser typeUser;
-    //relation with table dsi
-    @ManyToOne()
+    @Enumerated(EnumType.STRING)
+    private Category category;
+    //relation with tadable DSI
+    @ManyToOne
     @JoinColumn(name = "id_dsi")
     private DSI dsi;
-    //relation with agence table
-    @ManyToOne()
-    @JoinColumn(name = "idAgence")
-    private agence agence;
     //insert curent date
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)

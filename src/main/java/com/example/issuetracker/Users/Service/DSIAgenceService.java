@@ -2,10 +2,10 @@ package com.example.issuetracker.Users.Service;
 
 import com.example.issuetracker.DSI.Entity.DSI;
 import com.example.issuetracker.DSI.Repository.Dsi_repostory;
-import com.example.issuetracker.Users.DTOAgence.Creation_Agence_DTO;
-import com.example.issuetracker.Users.DTOAgence.Display_Agence_DTO;
-import com.example.issuetracker.Users.DTOAgence.PasswordDsi;
-import com.example.issuetracker.Users.Entity.agence;
+import com.example.issuetracker.Users.DTO.DTOAgence.Creation_Agence_DTO;
+import com.example.issuetracker.Users.DTO.DTOAgence.Display_Agence_DTO;
+import com.example.issuetracker.Users.DTO.DTOAgence.PasswordDsi;
+import com.example.issuetracker.Users.Entity.Agence;
 import com.example.issuetracker.Users.Repository.AgenceRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class AgenceService {
+public class DSIAgenceService {
     @Autowired
     private AgenceRepository agenceRepository;
     @Autowired
@@ -36,8 +36,8 @@ public class AgenceService {
             Optional<DSI> optionalDSI=this.dsiRepostory.findById(Id_DSI);
             if(!optionalDSI.isPresent()) throw  new ResponseStatusException(HttpStatus.FORBIDDEN,"Dsi Not found");
             DSI dsi=optionalDSI.get();
-            agence agence=new agence();
-
+            if(!ChekUserNameExsite(creationAgenceDto.getAgenceName())) throw new ResponseStatusException(HttpStatus.FORBIDDEN,"This username is alredy usng");
+            Agence agence=new Agence();
             agence.setIdAgence(UUID.randomUUID().toString());
             agence.setName(creationAgenceDto.getAgenceName());
             agence.setDsi(dsi);
@@ -55,24 +55,24 @@ public class AgenceService {
         Optional<DSI> optionalDSI=this.dsiRepostory.findById(idDsi);
         if(optionalDSI.isEmpty()) throw  new ResponseStatusException(HttpStatus.FORBIDDEN,"Dsi Not found");
         DSI dsi=optionalDSI.get();
-        List<agence> agenceList = this.agenceRepository.findAllAgencesByDsiId(dsi.getId_dsi());
+        List<Agence> agenceList = this.agenceRepository.findAllAgencesByDsiId(dsi.getId_dsi());
         List<Display_Agence_DTO> displayAgenceDTOs = agenceList.stream()
                 .map(agence -> mapAgenceToDTO(agence, dsi))
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(displayAgenceDTOs, HttpStatus.OK);
     }
-    public ResponseEntity<agence> UpdateAgence(Creation_Agence_DTO creationAgenceDto,String idAgence,String idDsi){
+    public ResponseEntity<Agence> UpdateAgence(Creation_Agence_DTO creationAgenceDto, String idAgence, String idDsi){
         try {
             System.out.println("Service idAgence "+idAgence);
             System.out.println("Service idDSI "+idDsi);
             if(creationAgenceDto.getAgenceName()==null || idAgence==null || idDsi==null) throw  new ResponseStatusException(HttpStatus.FORBIDDEN,"Agence Name is null");
-            Optional<agence> optionalAgence=this.agenceRepository.findAllAgencesByDsiIdByAgenceId(idDsi,idAgence);
+            Optional<Agence> optionalAgence=this.agenceRepository.findAllAgencesByDsiIdByAgenceId(idDsi,idAgence);
             System.out.println("Agence :\t"+optionalAgence.get());
             if(!optionalAgence.isPresent()) throw new ResponseStatusException(HttpStatus.FORBIDDEN,"this agence not founde");
-            agence agence=optionalAgence.get();
+            Agence agence=optionalAgence.get();
             agence.setName(creationAgenceDto.getAgenceName());
-            agence agenceUpdate=this.agenceRepository.save(agence);
+            Agence agenceUpdate=this.agenceRepository.save(agence);
             return new ResponseEntity<>(agenceUpdate,HttpStatus.OK);
 
         }catch (ResponseStatusException ex) {
@@ -94,9 +94,9 @@ public class AgenceService {
             //compar password dsi
             if(!BCrypt.checkpw(passwordDsi.getPassword(),dsi.getPassword_dsi())) throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Your password is not correct");
            //get agence by ID_DSI and ID_AGENCE and Controlle
-            Optional<agence> optionalAgence=this.agenceRepository.findAllAgencesByDsiIdByAgenceId(idDSI,idAgence);
+            Optional<Agence> optionalAgence=this.agenceRepository.findAllAgencesByDsiIdByAgenceId(idDSI,idAgence);
             if(!optionalAgence.isPresent()) throw  new ResponseStatusException(HttpStatus.FORBIDDEN,"Agence is not found");
-            agence agence=optionalAgence.get();
+            Agence agence=optionalAgence.get();
             System.out.println("Agence for Delete id : "+agence.getIdAgence());
             try {
                 this.agenceRepository.deleteById(agence.getIdAgence());
@@ -114,15 +114,24 @@ public class AgenceService {
                 throw new RuntimeException("An error occurred", ex);
             }
     }
-    public agence findAgenceByDSI(String idDSI,String idAgence)
+    private Boolean ChekUserNameExsite(String Name){
+        Optional<Agence> optionalAgence=this.agenceRepository.findAgenceBy_Name(Name);
+        boolean status;
+        if(optionalAgence.isPresent()){
+            return status=false;
+        }else{
+            return status=true;
+        }
+    }
+    public Agence findAgenceByDSI(String idDSI, String idAgence)
     {
-        Optional<agence> optionalAgence=this.agenceRepository.findAllAgencesByDsiIdByAgenceId(idDSI,idAgence);
+        Optional<Agence> optionalAgence=this.agenceRepository.findAllAgencesByDsiIdByAgenceId(idDSI,idAgence);
         if(!optionalAgence.isPresent()) throw  new ResponseStatusException(HttpStatus.FORBIDDEN,"Agence is not found");
-        agence agence=optionalAgence.get();
+        Agence agence=optionalAgence.get();
         System.out.println("Agence for Delete id : "+agence.getIdAgence());
         return agence;
     }
-    private Display_Agence_DTO mapAgenceToDTO(agence agence, DSI dsi) {
+    private Display_Agence_DTO mapAgenceToDTO(Agence agence, DSI dsi) {
         Display_Agence_DTO dto = new Display_Agence_DTO();
         dto.setIdAgence(agence.getIdAgence());
         dto.setName(agence.getName());

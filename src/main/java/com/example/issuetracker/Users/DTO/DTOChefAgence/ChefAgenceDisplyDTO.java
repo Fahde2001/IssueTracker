@@ -1,4 +1,4 @@
-package com.example.issuetracker.Users.DTOChefAgence;
+package com.example.issuetracker.Users.DTO.DTOChefAgence;
 
 import com.example.issuetracker.Users.Entity.TypeUser;
 import lombok.AllArgsConstructor;

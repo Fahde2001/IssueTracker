@@ -15,9 +15,10 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor@AllArgsConstructor
-public class agence implements Serializable {
+public class Agence implements Serializable {
     @Id
     private String idAgence;
+    @Column(unique = true)
     private String name;
     //relation with DSI table
     @ManyToOne
@@ -26,7 +27,7 @@ public class agence implements Serializable {
     //relation with chefagence
     @OneToMany(mappedBy = "agence",cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<chefAgence> chefAgence;
+    private List<ChefAgence> chefAgence;
     //relation with employe
     @OneToMany(mappedBy = "agence",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonIgnore

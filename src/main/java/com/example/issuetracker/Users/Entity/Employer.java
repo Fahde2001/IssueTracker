@@ -25,7 +25,7 @@ public class Employer {
     //relation with table agence
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "idAgence")
-    private agence agence;
+    private Agence agence;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
