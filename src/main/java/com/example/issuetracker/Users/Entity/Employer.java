@@ -17,6 +17,7 @@ public class Employer {
     @Column(unique = true)
     private String userNameEmployer;
     private String passwrodEmployer;
+    @Enumerated(EnumType.STRING)
     private TypeUser typeUser;
     //relation with table DSI
     @ManyToOne()

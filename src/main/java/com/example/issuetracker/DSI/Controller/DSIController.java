@@ -4,6 +4,8 @@ import com.example.issuetracker.DSI.DTO.Create_dsi_dto;
 import com.example.issuetracker.DSI.DTO.login_Dsi_DTO;
 import com.example.issuetracker.DSI.Entity.DSI;
 import com.example.issuetracker.DSI.Service.DSISerivice;
+import com.example.issuetracker.DSI.Service.ProblemDSI;
+import com.example.issuetracker.problem.DTO.DtoCreateProblem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -16,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class DSIController {
     @Autowired
     private DSISerivice  dsiSerivice;
+    @Autowired
+    private ProblemDSI problemDSI;
 
     @GetMapping()
     public String test(){
@@ -35,6 +39,11 @@ public class DSIController {
         return  this.dsiSerivice.loginDsi(loginDsiDto);
     }
 
-
+    @PostMapping("/problem/{id_dsi}")
+    public ResponseEntity<Boolean> AddProblem(@PathVariable String id_dsi, @RequestBody DtoCreateProblem dtoCreateProblem){
+        System.out.println("\n\n\n id  Employer \t"+id_dsi+"\n");
+        System.out.println("dto"+dtoCreateProblem.getDescription()+"\n\n");
+        return this.problemDSI.AddProblemDSI(id_dsi,dtoCreateProblem);
+    }
 
 }

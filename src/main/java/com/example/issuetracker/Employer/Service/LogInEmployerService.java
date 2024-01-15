@@ -1,7 +1,6 @@
 package com.example.issuetracker.Employer.Service;
 
 import com.example.issuetracker.Users.DTO.DTOLogin;
-import com.example.issuetracker.Users.Entity.ChefAgence;
 import com.example.issuetracker.Users.Entity.Employer;
 import com.example.issuetracker.Users.Repository.EmployerRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -14,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @Service
-public class EmployerService {
+public class LogInEmployerService {
     @Autowired
     private EmployerRepository employerRepository;
 

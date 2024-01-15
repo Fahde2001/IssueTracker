@@ -1,5 +1,6 @@
 package com.example.issuetracker.Users.Repository;
 
+import com.example.issuetracker.DSI.Entity.DSI;
 import com.example.issuetracker.Users.Entity.Employer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,7 @@ public interface EmployerRepository extends JpaRepository<Employer,String> {
     List<Employer> findAllEmpoyerByIdDSI(@Param("IdDsi") String IdDsi);
     @Query("SELECT e from Employer e where e.userNameEmployer=:UserName")
     Optional<Employer> findEmployerBy_UserName(@Param("UserName") String UserName);
+
+
+
 }

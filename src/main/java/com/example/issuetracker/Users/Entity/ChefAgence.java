@@ -19,6 +19,7 @@ public class ChefAgence implements Serializable {
     @Column(unique = true)
     private String userNameChefAgenc;
     private String passwordChefAgence;
+    @Enumerated(EnumType.STRING)
     private TypeUser typeUser;
     //relation with table dsi
     @ManyToOne()

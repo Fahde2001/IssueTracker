@@ -4,4 +4,5 @@ public enum TypeUser {
     Technicien,
     Employer,
     ChefAgence,
+    Dsi,
 }

@@ -1,9 +1,7 @@
 package com.example.issuetracker.Technicien.Controller;
 
-import com.example.issuetracker.Employer.Service.EmployerService;
 import com.example.issuetracker.Technicien.Service.TechnicienService;
 import com.example.issuetracker.Users.DTO.DTOLogin;
-import com.example.issuetracker.Users.Entity.Employer;
 import com.example.issuetracker.Users.Entity.Technicien;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
