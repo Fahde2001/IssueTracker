@@ -1,19 +1,20 @@
-package com.example.issuetracker.Employer.Service;
+package com.example.issuetracker.Chef_Agence.Service;
 
+import com.example.issuetracker.Chef_Agence.DTO.DTO_DisplayChefAgence;
 import com.example.issuetracker.DSI.Entity.DSI;
 import com.example.issuetracker.DSI.Repository.Dsi_repostory;
 import com.example.issuetracker.Employer.DTO.DTO_DisplayProblemEmployer;
-import com.example.issuetracker.Users.DTO.DTOEmployer.EmployerDisplyDTO;
 import com.example.issuetracker.Users.Entity.Agence;
+import com.example.issuetracker.Users.Entity.ChefAgence;
 import com.example.issuetracker.Users.Entity.Employer;
 import com.example.issuetracker.Users.Entity.TypeUser;
 import com.example.issuetracker.Users.Repository.AgenceRepository;
+import com.example.issuetracker.Users.Repository.ChefAgenceRepository;
 import com.example.issuetracker.Users.Repository.EmployerRepository;
 import com.example.issuetracker.problem.DTO.DtoCreateProblem;
 import com.example.issuetracker.problem.Entity.Problem;
 import com.example.issuetracker.problem.Entity.StatusProblem;
 import com.example.issuetracker.problem.Repository.RepositoryProblem;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -22,44 +23,41 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ProblemEmployerService {
+public class ProblemChefAgence {
     @Autowired
     private RepositoryProblem repositoryProblem;
     @Autowired
-    private EmployerRepository employerRepository;
+    private ChefAgenceRepository chefAgenceRepository;
     @Autowired
     private Dsi_repostory dsiRepostory;
     @Autowired
     private AgenceRepository agenceRepository;
 
-    public ResponseEntity<Boolean> AddProblemEmployer(@NonNull String id_Employer, @org.springframework.lang.NonNull DtoCreateProblem dtoCreateProblem){
+    public ResponseEntity<Boolean> AddProblemChefAgecne(@NonNull String id_ChefAgence, @org.springframework.lang.NonNull DtoCreateProblem dtoCreateProblem){
         try{
-            Employer employer=GetEmployeById(id_Employer);
-            DSI dsi=employer.getDsiemployer();
-            Agence agence=employer.getAgence();
+            ChefAgence chefAgence=GetChefAgence(id_ChefAgence);
+            DSI dsi=chefAgence.getDsi();
+            Agence agence=chefAgence.getAgence();
             Problem problemEmployer= new Problem();
             try {
                 problemEmployer.setId_problem(UUID.randomUUID().toString());
-                problemEmployer.setEmployer(employer);
+                problemEmployer.setEmployer(null);
                 problemEmployer.setAgence(agence);
                 problemEmployer.setDescription(dtoCreateProblem.getDescription());
-                problemEmployer.setTypeUser(TypeUser.Employer);
-                problemEmployer.setChefAgence(null);
-                problemEmployer.setDsi(dsi);
-                problemEmployer.setProblemCategory(dtoCreateProblem.getProblemCategory());
-                problemEmployer.setTechnicien(null);
+                problemEmployer.setTypeUser(TypeUser.ChefAgence);
+                problemEmployer.setChefAgence(chefAgence);
                 problemEmployer.setStatusProblem(StatusProblem.NOT_RESOLVED);
+                problemEmployer.setProblemCategory(dtoCreateProblem.getProblemCategory());
+                problemEmployer.setDsi(dsi);
+                problemEmployer.setTechnicien(null);
                 this.repositoryProblem.save(problemEmployer);
-                return new ResponseEntity<>(true,HttpStatus.OK);
+                return new ResponseEntity<>(true, HttpStatus.OK);
             }catch (EmptyResultDataAccessException e){
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
@@ -70,14 +68,13 @@ public class ProblemEmployerService {
         }
 
     }
-
-    public ResponseEntity<List<DTO_DisplayProblemEmployer>> DisplayProblemEmployer(String id_Employer){
+    public ResponseEntity<List<DTO_DisplayChefAgence>> DisplayProblemChefAgence(String id_ChefAgence){
         try{
-            List<Problem> list=GetProblemsEmployerById(id_Employer);
-            List<DTO_DisplayProblemEmployer> dtoDisplayProblemEmployers=list.stream()
-                    .map(this::mapEmployerDTO)
+            List<Problem> list=GetProblemsChefAgenceById(id_ChefAgence);
+            List<DTO_DisplayChefAgence> dtoDisplayChefAgences=list.stream()
+                    .map(this::mapChefAgenceDTO)
                     .collect(Collectors.toList());
-            return new ResponseEntity<>(dtoDisplayProblemEmployers,HttpStatus.FOUND);
+            return new ResponseEntity<>(dtoDisplayChefAgences,HttpStatus.FOUND);
 
         }catch (ResponseStatusException ex)
         {
@@ -87,19 +84,20 @@ public class ProblemEmployerService {
         }
     }
 
-    private Employer GetEmployeById(String id_Employer){
-        Optional<Employer> employer=this.employerRepository.findById(id_Employer);
-        return employer.orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN,"this EMPLOYER not found"));
+    private ChefAgence GetChefAgence(String id_ChafAgence){
+        Optional<ChefAgence> agence=this.chefAgenceRepository.findById(id_ChafAgence);
+        return agence.orElseThrow(()-> new ResponseStatusException(HttpStatus.FORBIDDEN,"this Chef Agence not found"));
+
     }
 
-    private List<Problem> GetProblemsEmployerById(String id_Employer){
-        List<Problem> list=this.repositoryProblem.findAllProblemsByEmployerId(id_Employer);
-        if(list.isEmpty()) throw  new ResponseStatusException(HttpStatus.FORBIDDEN,"we don't found problems for this employer");
+    private List<Problem> GetProblemsChefAgenceById(String id_ChefAgence){
+        List<Problem> list=this.repositoryProblem.findAllProblemsByChefAgenceId(id_ChefAgence);
+        if(list.isEmpty()) throw  new ResponseStatusException(HttpStatus.FORBIDDEN,"we don't found problems for this Chef Agence");
         return list;
     }
 
-    private DTO_DisplayProblemEmployer mapEmployerDTO(Problem problem) {
-        DTO_DisplayProblemEmployer dto = new DTO_DisplayProblemEmployer();
+    private DTO_DisplayChefAgence mapChefAgenceDTO(Problem problem) {
+        DTO_DisplayChefAgence dto = new DTO_DisplayChefAgence();
         dto.setDescription(problem.getDescription());
         dto.setProblemCategory(problem.getProblemCategory());
         dto.setStatusProblem(problem.getStatusProblem());
@@ -107,5 +105,6 @@ public class ProblemEmployerService {
 
         return dto;
     }
+
 
 }

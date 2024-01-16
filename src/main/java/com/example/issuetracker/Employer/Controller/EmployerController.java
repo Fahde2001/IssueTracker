@@ -1,5 +1,6 @@
 package com.example.issuetracker.Employer.Controller;
 
+import com.example.issuetracker.Employer.DTO.DTO_DisplayProblemEmployer;
 import com.example.issuetracker.Employer.Service.LogInEmployerService;
 import com.example.issuetracker.Employer.Service.ProblemEmployerService;
 import com.example.issuetracker.Users.DTO.DTOLogin;
@@ -8,6 +9,8 @@ import com.example.issuetracker.problem.DTO.DtoCreateProblem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/employer")
@@ -28,5 +31,11 @@ public class EmployerController {
         System.out.println("\n\n\n id  Employer \t"+id_employer+"\n");
         System.out.println("dto"+dtoCreateProblem.getDescription()+"\n\n");
         return this.problemEmployerService.AddProblemEmployer(id_employer,dtoCreateProblem);
+    }
+
+    @GetMapping("/problem/list/{id_employer}")
+    public ResponseEntity<List<DTO_DisplayProblemEmployer>> listAllProblemsEmployer(@PathVariable String id_employer){
+        System.out.println("\n\n\n id  Employer \t"+id_employer+"\n");
+        return this.problemEmployerService.DisplayProblemEmployer(id_employer);
     }
 }
